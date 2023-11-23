@@ -8,13 +8,17 @@ import {
   Alert,
 } from 'react-native';
 import { cadastro } from '../services';
+import type { ScreenProps } from '../context/modal/interfaces';
 
 export interface CadastroScreenProps {
-  navigation: any;
+  navigation?: any;
+  closeModal: () => void;
+  screenProps?: ScreenProps;
 }
 
 export const CadastroScreen: React.FC<CadastroScreenProps> = ({
   navigation,
+  closeModal,
 }) => {
   const [cpf, setCpf] = useState('');
   const [nome, setNome] = useState('');

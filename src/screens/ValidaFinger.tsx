@@ -1,34 +1,28 @@
-//import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  Alert,
   Button,
   Dimensions,
-  Image,
   StyleSheet,
   Text,
   View,
-  ActivityIndicator,
-  CameraRoll,
-  FileSystem,
-  TouchableWithoutFeedback,
   TouchableOpacity,
 } from 'react-native';
-import {
-  Camera,
-  useCameraDevices,
-  useFrameProcessor,
-} from 'react-native-vision-camera';
-
-import Loading from '../../utils/Loading';
-import { verifyDigital } from '../../services';
+import { Camera, useCameraDevices } from 'react-native-vision-camera';
+import { Loading } from '../components/Loading/Loading';
+import { verifyDigital } from '../services';
 import RNFS from 'react-native-fs';
+import type { ScreenProps } from '../context/modal/interfaces';
 
-//import RNFetchBlob from 'rn-fetch-blob';
-//import { labelImage } from "vision-camera-image-labeler";
+interface ValidaFingerProps {
+  navigation?: any;
+  closeModal: () => void;
+  screenProps?: ScreenProps;
+}
 
-// import 'react-native-reanimated';
-function ValidaFinger({ route, navigation }) {
+export const ValidaFinger: React.FC<ValidaFingerProps> = ({
+  route,
+  navigation,
+}) => {
   const { id } = route.params;
 
   //id = 41;
@@ -110,12 +104,6 @@ function ValidaFinger({ route, navigation }) {
     }
   };
 
-  const frameProcessor = useFrameProcessor((frame) => {
-    // 'worklet';
-    // const labels = labelImage(frame);
-    // console.log(labels)
-  }, []);
-
   const handlePress = async (event) => {
     //console.log(`Coordenadas X: ${event.nativeEvent.locationX}, Coordenadas Y: ${event.nativeEvent.locationY}`);
   };
@@ -148,7 +136,6 @@ function ValidaFinger({ route, navigation }) {
             // preset='photo'
             // quality={1}
             torch={'on'}
-            frameProcessor={frameProcessor}
             exposure={0.4}
             zoom={3}
             photo={true}
@@ -218,7 +205,7 @@ function ValidaFinger({ route, navigation }) {
       )}
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -232,5 +219,3 @@ const styles = StyleSheet.create({
     paddingBottom: Dimensions.get('window').height * 0.2, // Adjust the percentage as needed
   },
 });
-
-export default ValidaFinger;

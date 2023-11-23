@@ -1,22 +1,34 @@
 import React from 'react';
-import { View, Text, Image, Button, StyleSheet } from 'react-native';
+import { View, Image, Button, StyleSheet } from 'react-native';
+import type { ScreenProps } from '../context/modal/interfaces';
+import { useModal } from '../context/modal';
 
-const Ajuda = ({ route, navigation }) => {
-  const { id } = route.params;
+interface AjudaProps {
+  navigation?: any;
+  closeModal: () => void;
+  screenProps?: ScreenProps;
+}
 
-  //id = 41;
-  //console.log("id " + id);
+export const Ajuda: React.FC<AjudaProps> = ({ closeModal, screenProps }) => {
+  const { openModal } = useModal();
+  const id = screenProps?.id;
 
   const handleProximaTela = () => {
     //id = 41;
-    navigation.navigate('Camera', { id: id });
+
+    openModal({
+      type: 'mainCamera',
+      screenProps: {
+        id: id,
+      },
+    });
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.gifContainer}>
         <Image
-          source={require('../../assets/gif_instructions.gif')}
+          source={require('../assets/gif_instructions.gif')}
           style={styles.gif}
         />
       </View>
@@ -42,5 +54,3 @@ const styles = StyleSheet.create({
     height: '80%',
   },
 });
-
-export default Ajuda;

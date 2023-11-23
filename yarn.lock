@@ -11211,6 +11211,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-iphone-x-helper@npm:^1.3.1":
+  version: 1.3.1
+  resolution: "react-native-iphone-x-helper@npm:1.3.1"
+  peerDependencies:
+    react-native: ">=0.42.0"
+  checksum: 024376646009a966e33e12fc2358751830818b0fb73b1c601a64eb5e490d2dc43eec23668991b985a8c412a84d087f20eb45bb9b593567c08b66e741b7bddda5
+  languageName: node
+  linkType: hard
+
 "react-native-live-id-sdk-example@workspace:example":
   version: 0.0.0-use.local
   resolution: "react-native-live-id-sdk-example@workspace:example"
@@ -11257,8 +11266,10 @@ __metadata:
     react: 18.2.0
     react-native: 0.72.5
     react-native-builder-bob: ^0.20.0
+    react-native-fs: ^2.20.0
     react-native-modal: ^13.0.1
-    react-native-vision-camera: ^3.3.1
+    react-native-responsive-fontsize: ^0.5.1
+    react-native-vision-camera: ^2.15.4
     release-it: ^15.0.0
     styled-components: ^6.0.8
     turbo: ^1.10.7
@@ -11271,7 +11282,7 @@ __metadata:
     react-native-fs: "*"
     react-native-safe-area-context: "*"
     react-native-screens: "*"
-    react-native-vision-camera: "*"
+    react-native-vision-camera: ^2.15.4
   languageName: unknown
   linkType: soft
 
@@ -11285,6 +11296,17 @@ __metadata:
     react: "*"
     react-native: ">=0.65.0"
   checksum: 15985fd6aaae7a2134ec1003c63abd384f4a17beabd0a80b74033c98eccee29161aa07150f479373fb43106cfb33b5837b7a4f1d2b721ff03b3727490c830a07
+  languageName: node
+  linkType: hard
+
+"react-native-responsive-fontsize@npm:^0.5.1":
+  version: 0.5.1
+  resolution: "react-native-responsive-fontsize@npm:0.5.1"
+  dependencies:
+    react-native-iphone-x-helper: ^1.3.1
+  peerDependencies:
+    react-native: ">=0.42.0"
+  checksum: d24a4f46a439b391a6df06e4e25395703aabefa822250cf034c1f0543d52939e540d0a7d2862e39da81699b228aa19187314fdf08832697b24e0806c48055fd7
   languageName: node
   linkType: hard
 
@@ -11308,6 +11330,16 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 959e107091944ab1a01e8328f3094020f495f05c23509920922df1bf285942e9ed77e3769b560e1f3c47a9925a18ab4f66a56ff5817ef5f220735e30efe09401
+  languageName: node
+  linkType: hard
+
+"react-native-vision-camera@npm:^2.15.4":
+  version: 2.16.5
+  resolution: "react-native-vision-camera@npm:2.16.5"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 13242b0ecafe12c6ca3af53e53463137607f31d0b88314abe3abfd3cbd0bfd32df81be06af19c2f3671e914b05397626ea40b3f51b32bb60072fcc6740055f1d
   languageName: node
   linkType: hard
 

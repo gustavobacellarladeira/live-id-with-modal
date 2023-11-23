@@ -5,14 +5,9 @@ import {
   Alert,
   Button,
   Dimensions,
-  Image,
   StyleSheet,
   Text,
   View,
-  ActivityIndicator,
-  CameraRoll,
-  FileSystem,
-  TouchableWithoutFeedback,
   TouchableOpacity,
 } from 'react-native';
 import {
@@ -21,32 +16,36 @@ import {
   useFrameProcessor,
 } from 'react-native-vision-camera';
 
-import Loading from '../utils/Loading';
+import { Loading } from '../components/Loading/Loading';
 import { sendImages } from '../services';
 import RNFS from 'react-native-fs';
-
-//import RNFetchBlob from 'rn-fetch-blob';
-//import { labelImage } from "vision-camera-image-labeler";
-
-// import 'react-native-reanimated';
+import type { ScreenProps } from '../context/modal/interfaces';
 
 let vezesQualidadeDigitalCount = 0;
 
-function MainCamera({ route, navigation }) {
-  const { id } = route.params;
+interface MainCameraProps {
+  navigation?: any;
+  screenProps?: ScreenProps;
+  closeModal?: () => void;
+  onSuccess?: () => void;
+  onError?: () => void;
+}
 
-  //id = 41;
-
-  console.log('id ' + id);
-
-  console.log('vezesQualidadeDigitalCount ' + vezesQualidadeDigitalCount);
-
-  const newCameraPermission = Camera.requestCameraPermission();
+export const MainCamera: React.FC<MainCameraProps> = ({
+  navigation,
+  screenProps,
+  closeModal,
+  onSuccess,
+  onError,
+}) => {
+  const id = screenProps?.id;
 
   const [showCamera, setShowCamera] = useState(true);
-  const camera = useRef(Camera);
+  const camera = useRef<Camera>(null);
   const devices = useCameraDevices();
   const device = devices.back;
+
+  console.log('device --> ' + device);
 
   const [arrayImages, setArrayImages] = useState<any[]>([]);
 
@@ -56,21 +55,24 @@ function MainCamera({ route, navigation }) {
 
   const capturedPhoto = async () => {
     // const focus = await camera.current.focus({ x: 7, y: 6})
-
-    const snapshot = await camera.current.takeSnapshot({
+    const snapshot = await camera.current?.takeSnapshot({
       quality: 100,
       skipMetadata: true,
     });
 
-    const snapshot2 = await camera.current.takeSnapshot({
+    const snapshot2 = await camera.current?.takeSnapshot({
       quality: 100,
       skipMetadata: true,
     });
 
-    const snapshot3 = await camera.current.takeSnapshot({
+    const snapshot3 = await camera.current?.takeSnapshot({
       quality: 100,
       skipMetadata: true,
     });
+
+    if (snapshot == null || snapshot2 == null || snapshot3 == null) {
+      return false;
+    }
 
     let base64 = await encodeImageToBase64(snapshot.path);
     let base642 = await encodeImageToBase64(snapshot2.path);
@@ -169,15 +171,11 @@ function MainCamera({ route, navigation }) {
     }
   };
 
-  const frameProcessor = useFrameProcessor((frame: any) => {
+  const frameProcessor = useFrameProcessor(() => {
     // 'worklet';
     // const labels = labelImage(frame);
     // console.log(labels)
   }, []);
-
-  const handlePress = async (event: any) => {
-    //console.log(`Coordenadas X: ${event.nativeEvent.locationX}, Coordenadas Y: ${event.nativeEvent.locationY}`);
-  };
 
   useEffect(() => {
     if (fingerErro) {
@@ -186,13 +184,47 @@ function MainCamera({ route, navigation }) {
     }
   }, [fingerErro, navigation]);
 
-  const handleRetornar = () => {
-    // Função para lidar com o retorno para a tela de Login
-    setFingerErro(false); // Reseta a variável fingerErro
-    navigation.navigate('Login', { ativarCampoSenha: true }); // Define ativarCampoSenha como true
-  };
+  if (device == null)
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: `center`,
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 18,
+            fontWeight: '500',
+            color: '#fff',
+            textAlign: 'center',
+          }}
+        >
+          {' '}
+          Device is null{' '}
+          <Button
+            title="Voltar"
+            onPress={() => {
+              closeModal && closeModal();
+            }}
+          />
+          <Button
+            title="Sucess"
+            onPress={() => {
+              onSuccess && onSuccess();
+            }}
+          />
+          <Button
+            title="Error"
+            onPress={() => {
+              onError && onError();
+            }}
+          />
+        </Text>
+      </View>
+    );
 
-  if (device == null) return <View />;
   return (
     <View style={styles.container}>
       <Loading visible={load} />
@@ -213,6 +245,7 @@ function MainCamera({ route, navigation }) {
             // quality={1}
             torch={'on'}
             frameProcessor={frameProcessor}
+            // @ts-ignore
             exposure={0.4}
             zoom={3}
             photo={true}
@@ -276,7 +309,7 @@ function MainCamera({ route, navigation }) {
       )}
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -289,5 +322,3 @@ const styles = StyleSheet.create({
     paddingBottom: Dimensions.get('window').height * 0.2, // Adjust the percentage as needed
   },
 });
-
-export default MainCamera;

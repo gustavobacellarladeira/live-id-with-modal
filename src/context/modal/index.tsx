@@ -30,7 +30,15 @@ export const ModalProvider: React.FC<ModalProviderProps> = (props) => {
   const renderModal = useMemo(() => {
     if (!modalConfigs) return;
 
-    return <ModalScreen ref={modalRef} modalConfigs={modalConfigs} />;
+    return (
+      <ModalScreen
+        ref={modalRef}
+        modalConfigs={modalConfigs}
+        onClose={modalConfigs.onClose}
+        onSuccess={modalConfigs.onSuccess}
+        onError={modalConfigs.onError}
+      />
+    );
   }, [modalConfigs]);
 
   return (

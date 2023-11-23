@@ -8,14 +8,109 @@ import React, {
 } from 'react';
 
 import Modal from 'react-native-modal';
-import { Screen1 } from '../../screens/Screen1';
-import { Screen2 } from '../../screens/Screen2';
-
-import type { OpenModalProps } from '../../interfaces';
+import type { OpenModalProps, ScreenProps } from '../../interfaces';
+import { CadastroScreen } from '../../../../screens/CadastroScreen';
+import { MainCamera } from '../../../../screens/Camera';
+import { Ajuda } from '../../../../screens/Ajuda';
+import { Logado } from '../../../../screens/Logado';
+import { Login } from '../../../../screens/Login';
+import { ImageDisplayScreen } from '../../../../screens/ImageDisplayScreen';
+import { CameraProvaVidas } from '../../../../screens/ProvaVidas';
+import { ProvaVidas } from '../../../../screens/ProvaVidaScreen';
+import { ValidaFinger } from '../../../../screens/ValidaFinger';
 
 const modais = {
-  screen1: (modalClose: any) => <Screen1 closeModal={modalClose} />,
-  screen2: (modalClose: any) => <Screen2 closeModal={modalClose} />,
+  cadastroScreen: (
+    {
+      modalClose,
+    }: {
+      modalClose: any;
+    },
+    screenProps?: ScreenProps
+  ) => <CadastroScreen closeModal={modalClose} screenProps={screenProps} />,
+
+  mainCamera: (
+    {
+      modalClose,
+      onSuccess,
+      onError,
+    }: {
+      modalClose: any;
+      onSuccess?: () => void;
+      onError?: () => void;
+    },
+    screenProps?: ScreenProps
+  ) => (
+    <MainCamera
+      onError={onError}
+      onSuccess={onSuccess}
+      closeModal={modalClose}
+      screenProps={screenProps}
+    />
+  ),
+
+  ajuda: (
+    {
+      modalClose,
+    }: {
+      modalClose: any;
+    },
+    screenProps?: ScreenProps
+  ) => <Ajuda closeModal={modalClose} screenProps={screenProps} />,
+
+  login: (
+    {
+      modalClose,
+    }: {
+      modalClose: any;
+    },
+    screenProps?: ScreenProps
+  ) => <Login closeModal={modalClose} screenProps={screenProps} />,
+
+  logado: (
+    {
+      modalClose,
+    }: {
+      modalClose: any;
+    },
+    screenProps?: ScreenProps
+  ) => <Logado closeModal={modalClose} screenProps={screenProps} />,
+
+  imageDisplayScreen: (
+    {
+      modalClose,
+    }: {
+      modalClose: any;
+    },
+    screenProps?: ScreenProps
+  ) => <ImageDisplayScreen closeModal={modalClose} screenProps={screenProps} />,
+
+  cameraProvaVidas: (
+    {
+      modalClose,
+    }: {
+      modalClose: any;
+    },
+    screenProps?: ScreenProps
+  ) => <CameraProvaVidas closeModal={modalClose} screenProps={screenProps} />,
+
+  provaVidas: (
+    {
+      modalClose,
+    }: {
+      modalClose: any;
+    },
+    screenProps?: ScreenProps
+  ) => <ProvaVidas closeModal={modalClose} screenProps={screenProps} />,
+
+  validaFinger: (
+    {
+      modalClose,
+    }: {
+      modalClose: any;
+    },
+    screenProps?: ScreenProps
+  ) => <ValidaFinger closeModal={modalClose} screenProps={screenProps} />,
 };
 
 export interface ErrorProps {
@@ -26,18 +121,21 @@ export interface ErrorProps {
 
 export interface ModalProps extends ErrorProps {
   modalConfigs?: OpenModalProps | undefined;
-  modalBottom?: boolean;
-  icon?: React.ReactElement;
-  title?: string;
-  description?: string;
-  buttonText?: string;
-  buttonLineText?: string;
-  linkText?: string;
   visible?: boolean;
+  onSuccess?: () => void;
+  onError?: () => void;
+  // modalBottom?: boolean;
+  // icon?: React.ReactElement;
+  // title?: string;
+  // description?: string;
+  // buttonText?: string;
+  // buttonLineText?: string;
+  // linkText?: string;
   onClose?: () => void;
-  onLinkPress?: () => void;
-  onButtonLinePress?: () => void;
-  onButtonPress?: (errorData?: string) => void;
+  value?: string;
+  // onLinkPress?: () => void;
+  // onButtonLinePress?: () => void;
+  // onButtonPress?: (errorData?: string) => void;
 }
 
 export interface ModalType {
@@ -49,7 +147,7 @@ export const ModalBase: ForwardRefRenderFunction<ModalType, ModalProps> = (
   props,
   ref
 ) => {
-  const { visible = false, modalConfigs } = props;
+  const { visible = false, modalConfigs, onClose, onSuccess, onError } = props;
   const [isVisible, setIsVisible] = useState(visible);
 
   const open = useCallback(() => {
@@ -57,12 +155,9 @@ export const ModalBase: ForwardRefRenderFunction<ModalType, ModalProps> = (
   }, []);
 
   const close = useCallback(() => {
-    setIsVisible(false);
-  }, []);
-
-  const handleOnCloseModal = () => {
-    close();
-  };
+    onClose && onClose();
+    // setIsVisible(false);
+  }, [onClose]);
 
   useImperativeHandle(ref, () => ({ open, close }));
 
@@ -72,9 +167,17 @@ export const ModalBase: ForwardRefRenderFunction<ModalType, ModalProps> = (
       isVisible={isVisible}
       swipeDirection="down"
       propagateSwipe={true}
-      onSwipeComplete={handleOnCloseModal}
+      onSwipeComplete={close}
     >
-      {modalConfigs && modais[modalConfigs.type](close)}
+      {modalConfigs &&
+        modais[modalConfigs.type](
+          {
+            modalClose: close,
+            onSuccess: onSuccess,
+            onError: onError,
+          },
+          modalConfigs?.screenProps
+        )}
     </Modal>
   );
 };

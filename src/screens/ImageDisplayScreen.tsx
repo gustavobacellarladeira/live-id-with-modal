@@ -8,20 +8,36 @@ import {
   ScrollView,
   Dimensions,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { useIsFocused } from '@react-navigation/native'; // Importe useIsFocused para controlar o estado quando a tela está em foco
+import type { ScreenProps } from '../context/modal/interfaces';
+import { useModal } from '../context/modal';
 
-const ImageDisplayScreen = ({ route }) => {
-  const { base64Image, id } = route.params;
-  const navigation = useNavigation();
-  const isFocused = useIsFocused(); // Detecta se a tela está em foco
+interface ImageDisplayScreenProps {
+  screenProps?: ScreenProps;
+  closeModal?: () => void;
+}
+
+export const ImageDisplayScreen: React.FC<ImageDisplayScreenProps> = ({
+  screenProps,
+}) => {
+  const base64Image = screenProps?.base64Image;
+  const id = screenProps?.id;
+
+  const { openModal } = useModal();
 
   const goBack = () => {
-    navigation.goBack();
+    // todo: verificar isso
+    // navigation.goBack();
   };
 
   const handleProximaTela = () => {
-    navigation.navigate('Ajuda', { id: id });
+    // navigation.navigate('Ajuda', { id: id });
+
+    openModal({
+      type: 'ajuda',
+      screenProps: {
+        id: id,
+      },
+    });
   };
 
   return (
@@ -36,8 +52,8 @@ const ImageDisplayScreen = ({ route }) => {
 
         {/* Parte gráfica da "Tela 2" */}
         <View style={styles.additionalGraphics}>
-          <View style={styles.graphicElement1}></View>
-          <View style={styles.graphicElement2}></View>
+          <View style={styles.graphicElement1} />
+          <View style={styles.graphicElement2} />
         </View>
       </View>
       <View style={styles.buttonContainer}>
@@ -98,5 +114,3 @@ const styles = StyleSheet.create({
     // Defina o estilo para o segundo elemento gráfico
   },
 });
-
-export default ImageDisplayScreen;
