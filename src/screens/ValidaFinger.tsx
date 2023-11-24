@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Text,
   View,
+  Alert,
   TouchableOpacity,
 } from 'react-native';
 import { Camera, useCameraDevices } from 'react-native-vision-camera';
@@ -20,10 +21,10 @@ interface ValidaFingerProps {
 }
 
 export const ValidaFinger: React.FC<ValidaFingerProps> = ({
-  route,
   navigation,
+  screenProps,
 }) => {
-  const { id } = route.params;
+  const id = screenProps?.id;
 
   //id = 41;
 
@@ -61,10 +62,10 @@ export const ValidaFinger: React.FC<ValidaFingerProps> = ({
     //console.log(req)
     //console.log(image)
     if (req.code == 0) {
-      alert('Sucesso identificado !');
+      Alert.alert('Sucesso identificado !');
       setShowCamera(false);
     } else if (req.code == 1) {
-      alert('Não Identificado !');
+      Alert.alert('Não Identificado !');
       setLoad(false);
       setCapturedImage(null);
       navigation.navigate('Login', {
@@ -72,7 +73,7 @@ export const ValidaFinger: React.FC<ValidaFingerProps> = ({
         fingerErro: true,
       });
     } else {
-      alert('Erro ao tentar validar');
+      Alert.alert('Erro ao tentar validar');
       setLoad(false);
       setCapturedImage(null);
       navigation.navigate('Login', {

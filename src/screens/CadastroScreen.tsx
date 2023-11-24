@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { cadastro } from '../services';
 import type { ScreenProps } from '../context/modal/interfaces';
+import { useModal } from '../context/modal';
 
 export interface CadastroScreenProps {
   navigation?: any;
@@ -16,29 +17,44 @@ export interface CadastroScreenProps {
   screenProps?: ScreenProps;
 }
 
-export const CadastroScreen: React.FC<CadastroScreenProps> = ({
-  navigation,
-  closeModal,
-}) => {
+export const CadastroScreen: React.FC<CadastroScreenProps> = ({}) => {
   const [cpf, setCpf] = useState('');
   const [nome, setNome] = useState('');
   const [senha, setSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
+
+  const { openModal } = useModal();
 
   const handleCadastro = async () => {
     try {
       if (senha === confirmarSenha) {
         const response = await cadastro(cpf, nome, senha);
         var jsonString = JSON.stringify(response);
+
+        console.log('cadstro response -->', jsonString);
+        // todo: perguntar o porque do response padrao ser -->  {"code":1,"finger":false,"message":"User exists"} quando clica no cadastrar
         if (jsonString.includes('person_id')) {
           if (response.finger === false) {
-            navigation.navigate('Ajuda', { id: response.person_id });
+            // navigation.navigate('Ajuda', { id: response.person_id });
+
+            openModal({
+              type: 'ajuda',
+              screenProps: {
+                id: response.person_id,
+              },
+            });
           } else {
-            navigation.navigate('Login');
+            // navigation.navigate('Login');
+            openModal({
+              type: 'login',
+            });
           }
         } else if (jsonString.includes('User exists')) {
           Alert.alert('Usuário já cadastrado!');
-          navigation.navigate('Login');
+          // navigation.navigate('Login');
+          openModal({
+            type: 'login',
+          });
         } else if (jsonString.includes('erro')) {
           Alert.alert('Usuário não cadastrado', 'Por favor, cadastre-se!');
         } else {
@@ -66,6 +82,7 @@ export const CadastroScreen: React.FC<CadastroScreenProps> = ({
       <TextInput
         style={styles.input}
         placeholder="CPF"
+        placeholderTextColor="#000"
         keyboardType="numeric"
         value={cpf}
         onChangeText={setCpf}
@@ -73,12 +90,14 @@ export const CadastroScreen: React.FC<CadastroScreenProps> = ({
       <TextInput
         style={styles.input}
         placeholder="Nome"
+        placeholderTextColor="#000"
         value={nome}
         onChangeText={setNome}
       />
       <TextInput
         style={styles.input}
         placeholder="Digite a senha"
+        placeholderTextColor="#000"
         secureTextEntry={true}
         value={senha}
         onChangeText={(text) => setSenha(text)}
@@ -107,6 +126,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     marginBottom: 16,
+    color: '#00bfff',
   },
   input: {
     width: '80%',
@@ -117,6 +137,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     marginBottom: 16,
     fontSize: 16,
+    color: '#000',
   },
   button: {
     width: '80%',

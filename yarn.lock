@@ -11269,7 +11269,7 @@ __metadata:
     react-native-fs: ^2.20.0
     react-native-modal: ^13.0.1
     react-native-responsive-fontsize: ^0.5.1
-    react-native-vision-camera: ^2.15.4
+    react-native-vision-camera: ^3.6.10
     release-it: ^15.0.0
     styled-components: ^6.0.8
     turbo: ^1.10.7
@@ -11282,7 +11282,6 @@ __metadata:
     react-native-fs: "*"
     react-native-safe-area-context: "*"
     react-native-screens: "*"
-    react-native-vision-camera: ^2.15.4
   languageName: unknown
   linkType: soft
 
@@ -11333,16 +11332,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-vision-camera@npm:^2.15.4":
-  version: 2.16.5
-  resolution: "react-native-vision-camera@npm:2.16.5"
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-  checksum: 13242b0ecafe12c6ca3af53e53463137607f31d0b88314abe3abfd3cbd0bfd32df81be06af19c2f3671e914b05397626ea40b3f51b32bb60072fcc6740055f1d
-  languageName: node
-  linkType: hard
-
 "react-native-vision-camera@npm:^3.3.1":
   version: 3.3.1
   resolution: "react-native-vision-camera@npm:3.3.1"
@@ -11354,6 +11343,20 @@ __metadata:
     react-native-worklets-core:
       optional: true
   checksum: 37814a6b3d6683a6415599c3a688cf6d5ec2b5f07e49ec1f2b5d8659fd2985f88186bef0b71ff9f0681c2ae1f789847f82b065c9dcf76520bbe5ce7824646def
+  languageName: node
+  linkType: hard
+
+"react-native-vision-camera@npm:^3.6.10":
+  version: 3.6.10
+  resolution: "react-native-vision-camera@npm:3.6.10"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+    react-native-worklets-core: "*"
+  peerDependenciesMeta:
+    react-native-worklets-core:
+      optional: true
+  checksum: dc33f97731c5040bdf2e4ef141a6a7ef0dfb3a116c44fd7bb274dee30743b80cc08b200ae3967f40b2101dfbfd78f349edf0e011a74eacfb2fdb8d4dcd7cf237
   languageName: node
   linkType: hard
 

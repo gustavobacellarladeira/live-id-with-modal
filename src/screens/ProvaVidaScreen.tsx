@@ -1,46 +1,48 @@
 import React, { useEffect } from 'react';
+import { Alert } from 'react-native';
 import type { ScreenProps } from '../context/modal/interfaces';
+import { useModal } from '../context/modal';
 
 interface ProvaVidaScreenProps {
-  navigation?: any;
   closeModal: () => void;
   screenProps?: ScreenProps;
 }
 
-export const ProvaVidas: React.FC<ProvaVidaScreenProps> = ({
-  route,
-  navigation,
-}) => {
-  const { cpf, id } = route.params;
-  const cpfs = cpf
-    .replace('.', '')
-    .replace('.', '')
-    .replace('-', '')
-    .replace(',', '')
-    .replace('.', '')
-    .replace(' ', '');
+export const ProvaVidas: React.FC<ProvaVidaScreenProps> = ({ screenProps }) => {
+  const cpf = screenProps?.cpf;
+  const id = screenProps?.id;
+  const { openModal } = useModal();
+
   const isCPFValido = cpf !== '';
   const isIDValido = id !== '' && typeof id === 'number';
-
-  //console.log("isCPFValido " + isCPFValido);
-  //console.log("isIDValido " + isIDValido);
 
   useEffect(() => {
     // Verificar o CPF e ID e redirecionar para a tela correspondente
     if (!isCPFValido) {
-      alert('Por favor, informe o CPF!');
-      navigation.replace('Login');
+      Alert.alert('Por favor, informe o CPF!');
+      openModal({
+        type: 'login',
+      });
       return;
     } else if (!isIDValido) {
-      alert('Usuário não cadastrado. Por favor, cadastre-se!');
-      navigation.replace('Cadastro');
+      Alert.alert('Usuário não cadastrado. Por favor, cadastre-se!');
+      openModal({
+        type: 'cadastroScreen',
+      });
       return;
     } else {
       //console.log("cpf " + cpf);
       //console.log("id " + id);
-      navigation.replace('ValidaProvaVida', { cpf: cpf, id: id });
+      // navigation.replace('ValidaProvaVida', { cpf: cpf, id: id });
+      openModal({
+        type: 'cameraProvaVidas',
+        screenProps: {
+          cpf: cpf,
+          id: id,
+        },
+      });
     }
-  }, []);
+  }, [cpf, id, isCPFValido, isIDValido, openModal]);
 
   // Retorne null para evitar a renderização de qualquer conteúdo
   return null;

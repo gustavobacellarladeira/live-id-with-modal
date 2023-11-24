@@ -10,21 +10,17 @@ import {
   View,
   TouchableOpacity,
 } from 'react-native';
-import {
-  Camera,
-  useCameraDevices,
-  useFrameProcessor,
-} from 'react-native-vision-camera';
+import { Camera, useCameraDevice } from 'react-native-vision-camera';
 
 import { Loading } from '../components/Loading/Loading';
 import { sendImages } from '../services';
 import RNFS from 'react-native-fs';
 import type { ScreenProps } from '../context/modal/interfaces';
+import { useModal } from '../context/modal';
 
 let vezesQualidadeDigitalCount = 0;
 
 interface MainCameraProps {
-  navigation?: any;
   screenProps?: ScreenProps;
   closeModal?: () => void;
   onSuccess?: () => void;
@@ -32,7 +28,6 @@ interface MainCameraProps {
 }
 
 export const MainCamera: React.FC<MainCameraProps> = ({
-  navigation,
   screenProps,
   closeModal,
   onSuccess,
@@ -40,12 +35,11 @@ export const MainCamera: React.FC<MainCameraProps> = ({
 }) => {
   const id = screenProps?.id;
 
+  console.log('id', id);
+  const { openModal } = useModal();
+  const device = useCameraDevice('back');
   const [showCamera, setShowCamera] = useState(true);
   const camera = useRef<Camera>(null);
-  const devices = useCameraDevices();
-  const device = devices.back;
-
-  console.log('device --> ' + device);
 
   const [arrayImages, setArrayImages] = useState<any[]>([]);
 
@@ -55,19 +49,16 @@ export const MainCamera: React.FC<MainCameraProps> = ({
 
   const capturedPhoto = async () => {
     // const focus = await camera.current.focus({ x: 7, y: 6})
-    const snapshot = await camera.current?.takeSnapshot({
-      quality: 100,
-      skipMetadata: true,
+    const snapshot = await camera.current?.takePhoto({
+      qualityPrioritization: 'quality',
     });
 
-    const snapshot2 = await camera.current?.takeSnapshot({
-      quality: 100,
-      skipMetadata: true,
+    const snapshot2 = await camera.current?.takePhoto({
+      qualityPrioritization: 'quality',
     });
 
-    const snapshot3 = await camera.current?.takeSnapshot({
-      quality: 100,
-      skipMetadata: true,
+    const snapshot3 = await camera.current?.takePhoto({
+      qualityPrioritization: 'quality',
     });
 
     if (snapshot == null || snapshot2 == null || snapshot3 == null) {
@@ -115,12 +106,16 @@ export const MainCamera: React.FC<MainCameraProps> = ({
       return false;
     }
     let req = await sendImages(UID, finger, images);
+
+    console.log('req', JSON.stringify(req, null, 2));
     //console.log(req)
     if (req.code === 0) {
       Alert.alert('Sucesso !');
       setLoad(false);
       setArrayImages([]);
-      navigation.navigate('Login');
+      openModal({
+        type: 'login',
+      });
     } else if (req.code === 1) {
       Alert.alert('Já cadastrada !');
     } else {
@@ -131,17 +126,20 @@ export const MainCamera: React.FC<MainCameraProps> = ({
       //console.log('Quantidade de prevCount: ', vezesQualidadeDigitalCount)
       if (arrayImages.length > 0) {
         const firstBase64 = arrayImages[0]; // Pega o primeiro elemento do array
-        //console.log("ver " + firstBase64)
-        navigation.navigate('QualidadeDigital', {
-          base64Image: firstBase64,
-          id: id,
-        }); // Envia apenas a primeira base64
+
+        openModal({
+          type: 'imageDisplayScreen',
+          screenProps: {
+            id: id,
+            base64Image: firstBase64,
+          },
+        });
       }
     }
     setLoad(false);
     setArrayImages([]);
     return;
-  }, [arrayImages, id, navigation]);
+  }, [arrayImages, id, openModal]);
 
   useEffect(() => {
     if (arrayImages.length === 3) {
@@ -154,12 +152,16 @@ export const MainCamera: React.FC<MainCameraProps> = ({
     if (vezesQualidadeDigitalCount >= 3) {
       setFingerErro(true); // Define fingerErro como true após 2 acessos
       vezesQualidadeDigitalCount = 0;
-      navigation.navigate('Login', {
-        ativarCampoSenha: true,
-        fingerErro: true,
+      openModal({
+        type: 'login',
+        screenProps: {
+          id: id,
+          ativarCampoSenha: true,
+          fingerErro: true,
+        },
       });
     }
-  }, [arrayImages, navigation, sendFile]);
+  }, [arrayImages, id, openModal, sendFile]);
 
   const encodeImageToBase64 = async (imagePath: any) => {
     try {
@@ -171,18 +173,17 @@ export const MainCamera: React.FC<MainCameraProps> = ({
     }
   };
 
-  const frameProcessor = useFrameProcessor(() => {
-    // 'worklet';
-    // const labels = labelImage(frame);
-    // console.log(labels)
-  }, []);
-
   useEffect(() => {
     if (fingerErro) {
       // Se houver um erro na captura, retorne para a tela de Login com a variável fingerErro
-      navigation.navigate('Login', { fingerErro: true });
+      openModal({
+        type: 'login',
+        screenProps: {
+          fingerErro: true,
+        },
+      });
     }
-  }, [fingerErro, navigation]);
+  }, [fingerErro, openModal]);
 
   if (device == null)
     return (
@@ -201,26 +202,7 @@ export const MainCamera: React.FC<MainCameraProps> = ({
             textAlign: 'center',
           }}
         >
-          {' '}
-          Device is null{' '}
-          <Button
-            title="Voltar"
-            onPress={() => {
-              closeModal && closeModal();
-            }}
-          />
-          <Button
-            title="Sucess"
-            onPress={() => {
-              onSuccess && onSuccess();
-            }}
-          />
-          <Button
-            title="Error"
-            onPress={() => {
-              onError && onError();
-            }}
-          />
+          Você não possui uma câmera disponível
         </Text>
       </View>
     );
@@ -241,12 +223,9 @@ export const MainCamera: React.FC<MainCameraProps> = ({
             style={styles.subContainer}
             isActive={showCamera}
             device={device}
-            // preset='photo'
-            // quality={1}
             torch={'on'}
-            frameProcessor={frameProcessor}
             // @ts-ignore
-            exposure={0.4}
+            exposure={0x4}
             zoom={3}
             photo={true}
             enableHighQualityPhotos={true}

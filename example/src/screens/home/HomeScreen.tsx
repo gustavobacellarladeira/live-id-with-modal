@@ -25,7 +25,14 @@ export const HomeScreen = () => {
           });
         }}
       >
-        <Text>CadastroScreen</Text>
+        <Text
+          style={{
+            color: 'black',
+            fontSize: 30,
+          }}
+        >
+          CadastroScreen
+        </Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -48,7 +55,14 @@ export const HomeScreen = () => {
           });
         }}
       >
-        <Text>MainCamera</Text>
+        <Text
+          style={{
+            color: 'black',
+            fontSize: 30,
+          }}
+        >
+          MainCamera
+        </Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -62,7 +76,14 @@ export const HomeScreen = () => {
           });
         }}
       >
-        <Text>ajuda</Text>
+        <Text
+          style={{
+            color: 'black',
+            fontSize: 30,
+          }}
+        >
+          ajuda
+        </Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -76,7 +97,14 @@ export const HomeScreen = () => {
           });
         }}
       >
-        <Text>logado</Text>
+        <Text
+          style={{
+            color: 'black',
+            fontSize: 30,
+          }}
+        >
+          logado
+        </Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -90,7 +118,96 @@ export const HomeScreen = () => {
           });
         }}
       >
-        <Text>Login</Text>
+        <Text
+          style={{
+            color: 'black',
+            fontSize: 30,
+          }}
+        >
+          Login
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={{ marginTop: 20 }}
+        onPress={() => {
+          openModal({
+            type: 'imageDisplayScreen',
+            screenProps: {
+              id: 'asdsa',
+            },
+          });
+        }}
+      >
+        <Text
+          style={{
+            color: 'black',
+            fontSize: 30,
+          }}
+        >
+          imageDisplayScreen
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={{ marginTop: 20 }}
+        onPress={() => {
+          openModal({
+            type: 'cameraProvaVidas',
+            screenProps: {
+              id: 'adad',
+            },
+          });
+        }}
+      >
+        <Text
+          style={{
+            color: 'black',
+            fontSize: 30,
+          }}
+        >
+          cameraProvaVidas
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{ marginTop: 20 }}
+        onPress={() => {
+          openModal({
+            type: 'provaVidas',
+            screenProps: {
+              id: 'adssa',
+            },
+          });
+        }}
+      >
+        <Text
+          style={{
+            color: 'black',
+            fontSize: 30,
+          }}
+        >
+          provaVidas
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{ marginTop: 20 }}
+        onPress={() => {
+          openModal({
+            type: 'validaFinger',
+            screenProps: {
+              id: 'adad',
+            },
+          });
+        }}
+      >
+        <Text
+          style={{
+            color: 'black',
+            fontSize: 30,
+          }}
+        >
+          validaFinger
+        </Text>
       </TouchableOpacity>
     </View>
   );

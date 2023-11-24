@@ -156,7 +156,7 @@ export const ModalBase: ForwardRefRenderFunction<ModalType, ModalProps> = (
 
   const close = useCallback(() => {
     onClose && onClose();
-    // setIsVisible(false);
+    setIsVisible(false);
   }, [onClose]);
 
   useImperativeHandle(ref, () => ({ open, close }));

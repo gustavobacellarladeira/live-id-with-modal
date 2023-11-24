@@ -17,6 +17,7 @@ export interface ScreenProps {
   cpf?: string;
   fingerError?: false;
   base64Image?: string;
+  ativarCampoSenha?: boolean;
   [key: string]: any;
 }
 
