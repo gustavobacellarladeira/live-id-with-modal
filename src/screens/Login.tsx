@@ -20,11 +20,7 @@ interface LoginProps {
   screenProps?: ScreenProps;
 }
 
-export const Login: React.FC<LoginProps> = ({
-  navigation,
-  route,
-  screenProps,
-}) => {
+export const Login: React.FC<LoginProps> = ({ navigation, screenProps }) => {
   const [cpf, setCpf] = useState('');
   const [senha, setSenha] = useState('');
   const [responseFinger, setResponseFinger] = useState(false);
@@ -139,7 +135,7 @@ export const Login: React.FC<LoginProps> = ({
           });
         } else {
           openModal({
-            type: 'finger',
+            type: 'validaFinger',
             screenProps: {
               id: response.person_id,
               cpf: response.person_id,
@@ -190,7 +186,7 @@ export const Login: React.FC<LoginProps> = ({
         // navigation.navigate('Finger', { cpf: cpf, id: responseId });
 
         openModal({
-          type: 'finger',
+          type: 'validaFinger',
           screenProps: {
             id: responseId,
             cpf: cpf,
@@ -217,7 +213,7 @@ export const Login: React.FC<LoginProps> = ({
     // navigation.navigate('ProvaVida', { cpf: cpf, id: responseId });
 
     openModal({
-      type: 'provaVida',
+      type: 'provaVidas',
       screenProps: {
         id: responseId,
         cpf: cpf,
@@ -231,6 +227,7 @@ export const Login: React.FC<LoginProps> = ({
         {/* <Image source={require('../assets/logo.png')} style={styles.logo} /> */}
         <Text style={styles.title}>Faça seu login</Text>
         <TextInput
+          placeholderTextColor={'#000'}
           style={styles.input}
           placeholder="CPF"
           keyboardType="numeric"
@@ -241,13 +238,14 @@ export const Login: React.FC<LoginProps> = ({
         />
         {ativarCampoSenha && !responseFinger && (
           <TextInput
+            placeholderTextColor={'#000'}
             style={styles.input}
             placeholder="Digite a senha"
             secureTextEntry={true}
             value={senha}
             onChangeText={(text) => setSenha(text)}
             // todo: verifica se o editable substitui o disabled
-            editable={responseFinger} // Desativa o campo de senha se responseFinger for true
+            editable={!responseFinger} // Desativa o campo de senha se responseFinger for true
           />
         )}
         {!responseFinger ? (
@@ -301,6 +299,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     marginBottom: 16,
     fontSize: 16,
+    color: '#000',
   },
   button: {
     width: '80%',

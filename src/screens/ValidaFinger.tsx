@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+/* eslint-disable react-native/no-inline-styles */
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Button,
   Dimensions,
@@ -13,47 +14,47 @@ import { Loading } from '../components/Loading/Loading';
 import { verifyDigital } from '../services';
 import RNFS from 'react-native-fs';
 import type { ScreenProps } from '../context/modal/interfaces';
+import { useModal } from '../context/modal';
 
 interface ValidaFingerProps {
-  navigation?: any;
   closeModal: () => void;
   screenProps?: ScreenProps;
 }
 
-export const ValidaFinger: React.FC<ValidaFingerProps> = ({
-  navigation,
-  screenProps,
-}) => {
+export const ValidaFinger: React.FC<ValidaFingerProps> = ({ screenProps }) => {
   const id = screenProps?.id;
-
+  const { openModal } = useModal();
   //id = 41;
 
   //console.log("id " + id);
 
-  const newCameraPermission = Camera.requestCameraPermission();
-
   const [showCamera, setShowCamera] = useState(true);
-  const camera = useRef(Camera);
+  const camera = useRef<Camera>(null);
   const devices = useCameraDevices();
   const device = devices.back;
 
-  const [fingerErro, setFingerErro] = useState(false);
+  // const [fingerErro, setFingerErro] = useState(false);
 
-  const [capturedImage, setCapturedImage] = useState(null);
+  const [capturedImage, setCapturedImage] = useState<any>(null);
 
   const [load, setLoad] = useState(false);
 
   const capturedPhoto = async () => {
-    const snapshot = await camera.current.takeSnapshot({
+    const snapshot = await camera.current?.takeSnapshot({
       quality: 100,
       skipMetadata: true,
     });
+
+    if (snapshot == null) {
+      Alert.alert('Erro ao capturar imagem');
+      return false;
+    }
     let base64 = await encodeImageToBase64(snapshot.path);
     setCapturedImage(base64);
     return true;
   };
 
-  const sendFile = async () => {
+  const sendFile = useCallback(async () => {
     let UID = id;
     let finger = 'DI';
     let image = capturedImage;
@@ -61,30 +62,47 @@ export const ValidaFinger: React.FC<ValidaFingerProps> = ({
     let req = await verifyDigital(UID, finger, image);
     //console.log(req)
     //console.log(image)
-    if (req.code == 0) {
+    if (req.code === 0) {
       Alert.alert('Sucesso identificado !');
       setShowCamera(false);
-    } else if (req.code == 1) {
+    } else if (req.code === 1) {
       Alert.alert('Não Identificado !');
       setLoad(false);
       setCapturedImage(null);
-      navigation.navigate('Login', {
-        ativarCampoSenha: true,
-        fingerErro: true,
+
+      openModal({
+        type: 'login',
+        screenProps: {
+          ativarCampoSenha: true,
+          fingerErro: true,
+        },
       });
+      // navigation.navigate('Login', {
+      //   ativarCampoSenha: true,
+      //   fingerErro: true,
+      // });
     } else {
       Alert.alert('Erro ao tentar validar');
       setLoad(false);
       setCapturedImage(null);
-      navigation.navigate('Login', {
-        ativarCampoSenha: true,
-        fingerErro: true,
+
+      // navigation.navigate('Login', {
+      //   ativarCampoSenha: true,
+      //   fingerErro: true,
+      // });
+
+      openModal({
+        type: 'login',
+        screenProps: {
+          ativarCampoSenha: true,
+          fingerErro: true,
+        },
       });
     }
     setLoad(false);
     setCapturedImage(null);
     return;
-  };
+  }, [capturedImage, id, openModal]);
 
   useEffect(() => {
     if (capturedImage !== null) {
@@ -93,9 +111,9 @@ export const ValidaFinger: React.FC<ValidaFingerProps> = ({
     } else {
       //console.log('Nenhuma imagem capturada ainda.')
     }
-  }, [capturedImage]);
+  }, [capturedImage, sendFile]);
 
-  const encodeImageToBase64 = async (imagePath) => {
+  const encodeImageToBase64 = async (imagePath: string) => {
     try {
       const imageData = await RNFS.readFile(imagePath, 'base64');
       return imageData;
@@ -105,11 +123,12 @@ export const ValidaFinger: React.FC<ValidaFingerProps> = ({
     }
   };
 
-  const handlePress = async (event) => {
-    //console.log(`Coordenadas X: ${event.nativeEvent.locationX}, Coordenadas Y: ${event.nativeEvent.locationY}`);
-  };
+  // const handlePress = async (event) => {
+  //   //console.log(`Coordenadas X: ${event.nativeEvent.locationX}, Coordenadas Y: ${event.nativeEvent.locationY}`);
+  // };
 
   if (device == null) return <View />;
+
   return (
     <View style={styles.container}>
       <Loading visible={load} />
@@ -137,11 +156,12 @@ export const ValidaFinger: React.FC<ValidaFingerProps> = ({
             // preset='photo'
             // quality={1}
             torch={'on'}
+            // @ts-ignore
             exposure={0.4}
             zoom={3}
             photo={true}
             enableHighQualityPhotos={true}
-          ></Camera>
+          />
           <View
             style={{
               width: '100%',

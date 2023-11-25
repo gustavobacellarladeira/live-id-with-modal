@@ -10,7 +10,7 @@ import {
   View,
   TouchableOpacity,
 } from 'react-native';
-import { Camera, useCameraDevice } from 'react-native-vision-camera';
+import { Camera, useCameraDevices } from 'react-native-vision-camera';
 
 import { Loading } from '../components/Loading/Loading';
 import { sendImages } from '../services';
@@ -27,38 +27,49 @@ interface MainCameraProps {
   onError?: () => void;
 }
 
-export const MainCamera: React.FC<MainCameraProps> = ({
-  screenProps,
-  closeModal,
-  onSuccess,
-  onError,
-}) => {
+export const MainCamera: React.FC<MainCameraProps> = ({ screenProps }) => {
   const id = screenProps?.id;
 
   console.log('id', id);
   const { openModal } = useModal();
-  const device = useCameraDevice('back');
-  const [showCamera, setShowCamera] = useState(true);
+
   const camera = useRef<Camera>(null);
 
+  const devices = useCameraDevices();
+  const device = devices.back;
+
+  const [showCamera, setShowCamera] = useState(true);
   const [arrayImages, setArrayImages] = useState<any[]>([]);
-
   const [load, setLoad] = useState(false);
-
   const [fingerErro, setFingerErro] = useState(false);
 
   const capturedPhoto = async () => {
     // const focus = await camera.current.focus({ x: 7, y: 6})
-    const snapshot = await camera.current?.takePhoto({
-      qualityPrioritization: 'quality',
+    // const snapshot = await camera.current?.takePhoto({
+    //   qualityPrioritization: 'quality',
+    // });
+
+    // const snapshot2 = await camera.current?.takePhoto({
+    //   qualityPrioritization: 'quality',
+    // });
+
+    // const snapshot3 = await camera.current?.takePhoto({
+    //   qualityPrioritization: 'quality',
+    // });
+
+    const snapshot = await camera.current?.takeSnapshot({
+      quality: 100,
+      skipMetadata: true,
     });
 
-    const snapshot2 = await camera.current?.takePhoto({
-      qualityPrioritization: 'quality',
+    const snapshot2 = await camera.current?.takeSnapshot({
+      quality: 100,
+      skipMetadata: true,
     });
 
-    const snapshot3 = await camera.current?.takePhoto({
-      qualityPrioritization: 'quality',
+    const snapshot3 = await camera.current?.takeSnapshot({
+      quality: 100,
+      skipMetadata: true,
     });
 
     if (snapshot == null || snapshot2 == null || snapshot3 == null) {
@@ -225,7 +236,7 @@ export const MainCamera: React.FC<MainCameraProps> = ({
             device={device}
             torch={'on'}
             // @ts-ignore
-            exposure={0x4}
+            exposure={0.4}
             zoom={3}
             photo={true}
             enableHighQualityPhotos={true}
@@ -276,11 +287,15 @@ export const MainCamera: React.FC<MainCameraProps> = ({
                   justifyContent: 'center',
                 }}
               >
-                <Text
-                  style={{ fontSize: 18, fontWeight: '500', color: '#fff' }}
-                >
-                  Tirar Foto
-                </Text>
+                {!load ? (
+                  <Text
+                    style={{ fontSize: 18, fontWeight: '500', color: '#fff' }}
+                  >
+                    Tirar Foto
+                  </Text>
+                ) : (
+                  <Loading color="white" visible={load} />
+                )}
               </View>
             </TouchableOpacity>
           </View>

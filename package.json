@@ -83,7 +83,7 @@
     "react-native-fs": "*",
     "react-native-safe-area-context": "*",
     "react-native-screens": "*",
-    "react-native-vision-camera": "*"
+    "react-native-vision-camera": "^2.15.4"
   },
   "workspaces": [
     "example"
@@ -169,7 +169,7 @@
     "react-native-fs": "^2.20.0",
     "react-native-modal": "^13.0.1",
     "react-native-responsive-fontsize": "^0.5.1",
-    "react-native-vision-camera": "^3.6.10",
+    "react-native-vision-camera": "^2.15.4",
     "styled-components": "^6.0.8"
   }
 }

@@ -97,5 +97,7 @@ dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+  implementation 'com.facebook.fresco:animated-gif:2.0.0' 
 }
 

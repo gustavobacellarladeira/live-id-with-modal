@@ -1,6 +1,12 @@
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react/self-closing-comp */
 import React, { useRef, useState } from 'react';
 import { Button, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import { Camera, useCameraDevices } from 'react-native-vision-camera';
+import {
+  Camera,
+  useCameraDevices,
+  type VideoFile,
+} from 'react-native-vision-camera';
 
 import { Loading } from '../components/Loading/Loading';
 import { Toast } from '../components/Toast/Toast';
@@ -10,6 +16,7 @@ import { provaVida } from '../services';
 
 import { RFValue } from 'react-native-responsive-fontsize';
 import type { ScreenProps } from '../context/modal/interfaces';
+import { Alert } from 'react-native';
 
 interface CameraProvaVidasProps {
   navigation?: any;
@@ -28,16 +35,16 @@ export const CameraProvaVidas: React.FC<CameraProvaVidasProps> = ({
   //console.log("id " + id);
   //console.log("cpf " + cpf);
 
-  const newCameraPermission = Camera.requestCameraPermission();
+  // const newCameraPermission = Camera.requestCameraPermission();
 
   const [showCamera, setShowCamera] = useState(true);
-  const camera = useRef(Camera);
+  const camera = useRef<Camera>(null);
   const devices = useCameraDevices();
 
   const exposure = 0.45;
   const fps = 30;
 
-  const [desativaBotao, setDesativaBotao] = useState(false);
+  // const [desativaBotao, setDesativaBotao] = useState(false);
 
   const device = devices.back;
   const [load, setLoad] = useState(false);
@@ -66,18 +73,19 @@ export const CameraProvaVidas: React.FC<CameraProvaVidasProps> = ({
 
   const [modalCounterVisible, setModalCounterVisible] = useState(false);
 
-  function openCounter() {
-    setLoad(true);
-    setIsRecording(true);
-  }
+  // function openCounter() {
+  //   setLoad(true);
+  //   setIsRecording(true);
+  // }
 
-  function closeCounter() {
-    setModalCounterVisible(false);
-  }
+  // function closeCounter() {
+  //   setModalCounterVisible(false);
+  // }
 
   const recordingVideo = async () => {
-    await camera.current.startRecording({
+    camera.current?.startRecording({
       flash: 'on',
+      // @ts-ignore
       setExposureCompensation: exposure,
       frameProcessorFps: fps,
       onRecordingFinished: (video) => sendFile(video),
@@ -90,15 +98,15 @@ export const CameraProvaVidas: React.FC<CameraProvaVidasProps> = ({
   };
 
   const stopRecodingVideo = async () => {
-    let video = await camera.current.stopRecording();
+    await camera.current?.stopRecording();
     return;
   };
 
-  const sendFile = async (file) => {
+  const sendFile = async (file: VideoFile) => {
     setLoad(true);
     let req = await provaVida(file, id, exposure);
     //console.log(req.code)
-    if (req.code == 0 && req.bpm >= 0) {
+    if (req.code === 0 && req.bpm >= 0) {
       optionsToast = {
         message: `Seu batimento esta em: ${req.bpm}.\n Prova de vida concluida !`,
         visible: true,
@@ -106,7 +114,7 @@ export const CameraProvaVidas: React.FC<CameraProvaVidasProps> = ({
       setStateToast(optionsToast);
       setShowCamera(false);
     } else {
-      alert(req.message);
+      Alert.alert(req.message);
     }
     setLoad(false);
     //setDesativaBotao(false)
@@ -114,11 +122,12 @@ export const CameraProvaVidas: React.FC<CameraProvaVidasProps> = ({
     return;
   };
 
-  const handlePress = async (event) => {
-    //console.log(`Coordenadas X: ${event.nativeEvent.locationX}, Coordenadas Y: ${event.nativeEvent.locationY}`);
-  };
+  // const handlePress = async (event) => {
+  //   //console.log(`Coordenadas X: ${event.nativeEvent.locationX}, Coordenadas Y: ${event.nativeEvent.locationY}`);
+  // };
 
   if (device == null) return <View />;
+
   return (
     <View style={styles.container}>
       <Toast
@@ -146,7 +155,7 @@ export const CameraProvaVidas: React.FC<CameraProvaVidasProps> = ({
             device={device}
             video={true}
             torch={'on'}
-          ></Camera>
+          />
           <View
             style={{
               width: '100%',
