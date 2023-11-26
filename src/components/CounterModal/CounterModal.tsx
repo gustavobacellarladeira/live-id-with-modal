@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, Modal, StyleSheet } from "react-native";
+import React, { useState, useEffect } from 'react';
+import { View, Text, Modal, StyleSheet } from 'react-native';
 
 interface CounterModalProps {
   isVisible: boolean;
@@ -16,6 +16,7 @@ export const CounterModal: React.FC<CounterModalProps> = ({
     if (isVisible) {
       startCountdown();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVisible]);
 
   const startCountdown = () => {
@@ -45,17 +46,17 @@ export const CounterModal: React.FC<CounterModalProps> = ({
 export const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 8,
     padding: 16,
   },
   counterText: {
     fontSize: 48,
-    textAlign: "center",
+    textAlign: 'center',
   },
 });

@@ -14,7 +14,7 @@ export const HomeScreen = () => {
           openModal({
             type: 'cadastroScreen',
             screenProps: {
-              id: '123',
+              id: '132',
             },
             onClose() {
               console.log('onClose DONE 1');
@@ -41,7 +41,7 @@ export const HomeScreen = () => {
           openModal({
             type: 'mainCamera',
             screenProps: {
-              id: '123',
+              id: '132',
             },
             onClose: () => {
               console.log('ONCLOSE NA HOME');
@@ -71,7 +71,7 @@ export const HomeScreen = () => {
           openModal({
             type: 'ajuda',
             screenProps: {
-              id: '09090909',
+              id: '132',
             },
           });
         }}
@@ -92,7 +92,7 @@ export const HomeScreen = () => {
           openModal({
             type: 'logado',
             screenProps: {
-              id: 'asdsadad',
+              id: '132',
             },
           });
         }}
@@ -113,7 +113,7 @@ export const HomeScreen = () => {
           openModal({
             type: 'login',
             screenProps: {
-              id: '1231',
+              id: '132',
             },
           });
         }}
@@ -134,7 +134,7 @@ export const HomeScreen = () => {
           openModal({
             type: 'imageDisplayScreen',
             screenProps: {
-              id: 'asdsa',
+              id: '132',
             },
           });
         }}
@@ -155,7 +155,7 @@ export const HomeScreen = () => {
           openModal({
             type: 'cameraProvaVidas',
             screenProps: {
-              id: 'adad',
+              id: '132',
             },
           });
         }}
@@ -175,7 +175,7 @@ export const HomeScreen = () => {
           openModal({
             type: 'provaVidas',
             screenProps: {
-              id: 'adssa',
+              id: '132',
             },
           });
         }}
@@ -195,7 +195,7 @@ export const HomeScreen = () => {
           openModal({
             type: 'validaFinger',
             screenProps: {
-              id: 'adad',
+              id: '132',
             },
           });
         }}

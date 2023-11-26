@@ -44,19 +44,6 @@ export const MainCamera: React.FC<MainCameraProps> = ({ screenProps }) => {
   const [fingerErro, setFingerErro] = useState(false);
 
   const capturedPhoto = async () => {
-    // const focus = await camera.current.focus({ x: 7, y: 6})
-    // const snapshot = await camera.current?.takePhoto({
-    //   qualityPrioritization: 'quality',
-    // });
-
-    // const snapshot2 = await camera.current?.takePhoto({
-    //   qualityPrioritization: 'quality',
-    // });
-
-    // const snapshot3 = await camera.current?.takePhoto({
-    //   qualityPrioritization: 'quality',
-    // });
-
     const snapshot = await camera.current?.takeSnapshot({
       quality: 100,
       skipMetadata: true,

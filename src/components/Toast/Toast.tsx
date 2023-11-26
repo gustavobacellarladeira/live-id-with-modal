@@ -1,5 +1,5 @@
-import React from "react";
-import { View, Modal, Text, StyleSheet, TouchableOpacity } from "react-native";
+import React from 'react';
+import { View, Modal, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 interface ToastProps {
   isVisible: boolean;
@@ -29,31 +29,32 @@ export const Toast: React.FC<ToastProps> = ({
 export const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   modalCard: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     padding: 16,
     borderRadius: 8,
-    width: "80%",
-    alignItems: "center",
+    width: '80%',
+    alignItems: 'center',
   },
   messageText: {
     fontSize: 18,
     marginBottom: 16,
-    textAlign: "center",
+    textAlign: 'center',
+    color: '#333',
   },
   closeButton: {
     marginTop: 8,
-    backgroundColor: "#ccc",
+    backgroundColor: '#ccc',
     padding: 8,
     borderRadius: 4,
   },
   closeButtonText: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });

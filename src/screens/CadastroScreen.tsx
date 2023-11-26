@@ -6,13 +6,13 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  Image,
 } from 'react-native';
 import { cadastro } from '../services';
 import type { ScreenProps } from '../context/modal/interfaces';
 import { useModal } from '../context/modal';
 
 export interface CadastroScreenProps {
-  navigation?: any;
   closeModal: () => void;
   screenProps?: ScreenProps;
 }
@@ -35,8 +35,6 @@ export const CadastroScreen: React.FC<CadastroScreenProps> = ({}) => {
         // todo: perguntar o porque do response padrao ser -->  {"code":1,"finger":false,"message":"User exists"} quando clica no cadastrar
         if (jsonString.includes('person_id')) {
           if (response.finger === false) {
-            // navigation.navigate('Ajuda', { id: response.person_id });
-
             openModal({
               type: 'ajuda',
               screenProps: {
@@ -44,14 +42,12 @@ export const CadastroScreen: React.FC<CadastroScreenProps> = ({}) => {
               },
             });
           } else {
-            // navigation.navigate('Login');
             openModal({
               type: 'login',
             });
           }
         } else if (jsonString.includes('User exists')) {
           Alert.alert('Usuário já cadastrado!');
-          // navigation.navigate('Login');
           openModal({
             type: 'login',
           });
@@ -77,7 +73,7 @@ export const CadastroScreen: React.FC<CadastroScreenProps> = ({}) => {
 
   return (
     <View style={styles.container}>
-      {/* <Image source={require('../assets/logo.png')} style={styles.logo} /> */}
+      <Image source={require('../assets/logo.png')} style={styles.logo} />
       <Text style={styles.title}>Cadastro de usuário</Text>
       <TextInput
         style={styles.input}
@@ -104,6 +100,7 @@ export const CadastroScreen: React.FC<CadastroScreenProps> = ({}) => {
       />
       <TextInput
         style={styles.input}
+        placeholderTextColor="#000"
         placeholder="Digite a senha novamente"
         secureTextEntry={true}
         value={confirmarSenha}

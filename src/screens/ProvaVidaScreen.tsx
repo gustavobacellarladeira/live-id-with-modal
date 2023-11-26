@@ -31,9 +31,6 @@ export const ProvaVidas: React.FC<ProvaVidaScreenProps> = ({ screenProps }) => {
       });
       return;
     } else {
-      //console.log("cpf " + cpf);
-      //console.log("id " + id);
-      // navigation.replace('ValidaProvaVida', { cpf: cpf, id: id });
       openModal({
         type: 'cameraProvaVidas',
         screenProps: {

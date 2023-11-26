@@ -9,7 +9,7 @@ interface AjudaProps {
   screenProps?: ScreenProps;
 }
 
-export const Ajuda: React.FC<AjudaProps> = ({ closeModal, screenProps }) => {
+export const Ajuda: React.FC<AjudaProps> = ({ screenProps }) => {
   const { openModal } = useModal();
   const id = screenProps?.id;
 

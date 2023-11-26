@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Modal, ActivityIndicator } from 'react-native';
+import { View, Modal, ActivityIndicator, StyleSheet } from 'react-native';
 
 interface LoadingProps {
   visible: boolean;
@@ -17,9 +17,18 @@ export const Loading: React.FC<LoadingProps> = ({
       visible={visible}
       statusBarTranslucent={true}
     >
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color={color}></ActivityIndicator>
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color={color} />
       </View>
     </Modal>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

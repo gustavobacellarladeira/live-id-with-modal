@@ -53,8 +53,7 @@ export const Login: React.FC<LoginProps> = ({ navigation, screenProps }) => {
         const responseCPF = await verificaCPF(cpfs);
         setResponseId(responseCPF.person_id);
         setResponseFinger(responseCPF.finger);
-        //console.log('finger :', responseCPF.finger);
-        //console.log('valida :', fingerErro);
+
         if (responseCPF.finger === false) {
           setSenha('');
           setAtivarCampoSenha(true);
@@ -63,7 +62,6 @@ export const Login: React.FC<LoginProps> = ({ navigation, screenProps }) => {
           setAtivarCampoSenha(true);
           setResponseFinger(false);
         }
-        // console.log('ativarCampoSenha :', ativarCampoSenha);
       } catch (error) {
         console.error('Erro na consulta à API:', error);
       }
@@ -88,12 +86,6 @@ export const Login: React.FC<LoginProps> = ({ navigation, screenProps }) => {
     // return unsubscribe;
   }, [cpf, fingerErro, navigation]);
 
-  //console.log('fingerErro :', fingerErro);
-
-  const handleLimparCPF = () => {
-    setCpf('');
-  };
-
   const handleLogin = async () => {
     if (!cpf || cpf.length < 11 || !/^\d+$/.test(cpf) || senha === '') {
       Alert.alert('Erro', 'Por favor, informe seu CPF');
@@ -104,28 +96,13 @@ export const Login: React.FC<LoginProps> = ({ navigation, screenProps }) => {
       const response = await login(cpf, senha);
       var jsonString = JSON.stringify(response);
 
-      /*
-      console.log('fingerErroA :', fingerErro);
-      console.log('response.finger :', response.finger);
-      console.log('senha :', senha);
-      console.log('response.cpf :', response.cpf);
-      */
-
       if (jsonString.includes('person_id')) {
         if (senha !== '' && senha.length >= 1 && fingerErro) {
-          //console.log('Logado :', fingerErro);
           setFingerErro(false);
-          // navigation.navigate('Logado');
           openModal({
             type: 'logado',
           });
         } else if (response.finger === false && ativarCampoSenha) {
-          //console.log('Camera :', response.person_id);
-          // navigation.navigate('Camera', {
-          //   cpf: response.cpf,
-          //   id: response.person_id,
-          // });
-
           openModal({
             type: 'mainCamera',
             screenProps: {
@@ -141,13 +118,8 @@ export const Login: React.FC<LoginProps> = ({ navigation, screenProps }) => {
               cpf: response.person_id,
             },
           });
-          // navigation.navigate('Finger', {
-          //   cpf: response.cpf,
-          //   id: response.person_id,
-          // });
         }
       } else if (jsonString.includes('erro')) {
-        //console.log('Invalid :', jsonString);
         if (jsonString.includes('Invalid login')) {
           Alert.alert('Usuário', 'CPF ou Senha incorreta!');
         } else {
@@ -171,20 +143,15 @@ export const Login: React.FC<LoginProps> = ({ navigation, screenProps }) => {
   };
 
   const handleDigital = async () => {
-    //console.log('ativarCampoSenha aqui :', ativarCampoSenha);
-    //console.log('cpf :', cpf);
     if (
       senha !== '' &&
       senha.length >= 1 &&
       !ativarCampoSenha &&
       !responseFinger
     ) {
-      //console.log('ativarCampoSenha xxxxxxxxx :', ativarCampoSenha);
       handleLogin();
     } else {
       try {
-        // navigation.navigate('Finger', { cpf: cpf, id: responseId });
-
         openModal({
           type: 'validaFinger',
           screenProps: {
@@ -202,16 +169,12 @@ export const Login: React.FC<LoginProps> = ({ navigation, screenProps }) => {
   };
 
   const handleCadastro = () => {
-    // navigation.navigate('Cadastro');
-
     openModal({
       type: 'cadastroScreen',
     });
   };
 
   const handleProvaVida = () => {
-    // navigation.navigate('ProvaVida', { cpf: cpf, id: responseId });
-
     openModal({
       type: 'provaVidas',
       screenProps: {
@@ -224,7 +187,10 @@ export const Login: React.FC<LoginProps> = ({ navigation, screenProps }) => {
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.container}>
-        {/* <Image source={require('../assets/logo.png')} style={styles.logo} /> */}
+        <Image
+          source={require('../../src/assets/logo.png')}
+          style={styles.logo}
+        />
         <Text style={styles.title}>Faça seu login</Text>
         <TextInput
           placeholderTextColor={'#000'}
