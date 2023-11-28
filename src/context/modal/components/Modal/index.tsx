@@ -23,11 +23,22 @@ const modais = {
   cadastroScreen: (
     {
       modalClose,
+      onSuccess,
+      onError,
     }: {
       modalClose: any;
+      onSuccess?: (response: any) => void;
+      onError?: () => void;
     },
     screenProps?: ScreenProps
-  ) => <CadastroScreen closeModal={modalClose} screenProps={screenProps} />,
+  ) => (
+    <CadastroScreen
+      onError={onError}
+      onSuccess={(response) => onSuccess && onSuccess(response)}
+      closeModal={modalClose}
+      screenProps={screenProps}
+    />
+  ),
 
   mainCamera: (
     {
@@ -36,14 +47,14 @@ const modais = {
       onError,
     }: {
       modalClose: any;
-      onSuccess?: () => void;
+      onSuccess?: (response: any) => void;
       onError?: () => void;
     },
     screenProps?: ScreenProps
   ) => (
     <MainCamera
       onError={onError}
-      onSuccess={onSuccess}
+      onSuccess={(response) => onSuccess && onSuccess(response)}
       closeModal={modalClose}
       screenProps={screenProps}
     />
@@ -106,11 +117,22 @@ const modais = {
   validaFinger: (
     {
       modalClose,
+      onSuccess,
+      onError,
     }: {
       modalClose: any;
+      onSuccess?: (response: any) => void;
+      onError?: () => void;
     },
     screenProps?: ScreenProps
-  ) => <ValidaFinger closeModal={modalClose} screenProps={screenProps} />,
+  ) => (
+    <ValidaFinger
+      onError={onError}
+      onSuccess={(response) => onSuccess && onSuccess(response)}
+      closeModal={modalClose}
+      screenProps={screenProps}
+    />
+  ),
 };
 
 export interface ErrorProps {
@@ -122,20 +144,10 @@ export interface ErrorProps {
 export interface ModalProps extends ErrorProps {
   modalConfigs?: OpenModalProps | undefined;
   visible?: boolean;
-  onSuccess?: () => void;
-  onError?: () => void;
-  // modalBottom?: boolean;
-  // icon?: React.ReactElement;
-  // title?: string;
-  // description?: string;
-  // buttonText?: string;
-  // buttonLineText?: string;
-  // linkText?: string;
+  onSuccess?: (response?: any) => void;
+  onError?: (response?: any) => void;
   onClose?: () => void;
   value?: string;
-  // onLinkPress?: () => void;
-  // onButtonLinePress?: () => void;
-  // onButtonPress?: (errorData?: string) => void;
 }
 
 export interface ModalType {

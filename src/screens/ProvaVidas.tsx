@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import {
   Camera,
@@ -29,6 +29,12 @@ export const CameraProvaVidas: React.FC<CameraProvaVidasProps> = ({
   const [showCamera, setShowCamera] = useState(true);
   const camera = useRef<Camera>(null);
   const devices = useCameraDevices();
+  const [intervalState, setIntervalState] = useState<NodeJS.Timeout | null>(
+    null
+  );
+
+  // Define your state variable for the timer
+  const [timer, setTimer] = useState(0);
 
   const exposure = 0.45;
   const fps = 30;
@@ -55,9 +61,32 @@ export const CameraProvaVidas: React.FC<CameraProvaVidasProps> = ({
 
   const [modalCounterVisible] = useState(false);
 
+  useEffect(() => {
+    if (timer <= 0) {
+      if (!intervalState) return;
+      clearInterval(intervalState);
+      stopRecodingVideo();
+      setLoad(true);
+      setIsRecording(false);
+    }
+  }, [timer, intervalState]);
+
   const recordingVideo = async () => {
+    startVideoRecording();
+
+    setTimer(10); // Reset the timer to 0 when starting the recording
+
+    setIntervalState(
+      setInterval(() => {
+        setTimer((prevTimer) => prevTimer - 1); // Update the timer state
+      }, 1000)
+    );
+  };
+
+  const startVideoRecording = () => {
     setIsRecording(true);
-    await camera.current?.startRecording({
+
+    camera.current?.startRecording({
       flash: 'on',
       // @ts-ignore
       setExposureCompensation: exposure,
@@ -65,10 +94,6 @@ export const CameraProvaVidas: React.FC<CameraProvaVidasProps> = ({
       onRecordingFinished: (video) => sendFile(video),
       onRecordingError: (error) => console.error(error),
     });
-    setTimeout(() => {
-      stopRecodingVideo();
-      setIsRecording(false);
-    }, 10000);
   };
 
   const stopRecodingVideo = async () => {
@@ -117,7 +142,12 @@ export const CameraProvaVidas: React.FC<CameraProvaVidasProps> = ({
       <Loading visible={load} />
       {!showCamera ? (
         <View
-          style={{ flex: 1, alignItems: 'center', justifyContent: `center` }}
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: `center`,
+            backgroundColor: 'transparent',
+          }}
         >
           <Button title="Mostrar Camera" onPress={() => setShowCamera(true)} />
         </View>
@@ -139,7 +169,11 @@ export const CameraProvaVidas: React.FC<CameraProvaVidasProps> = ({
             >
               <View style={styles.containerText}>
                 <Text style={styles.textRecording}>
-                  {isRecording ? 'Salvando...' : 'Verificar'}
+                  {isRecording
+                    ? `Aguarde ${timer} segundos`
+                    : load
+                    ? 'Processando...'
+                    : 'Verificar'}
                 </Text>
               </View>
             </TouchableOpacity>

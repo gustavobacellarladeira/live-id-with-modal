@@ -23,11 +23,14 @@ let vezesQualidadeDigitalCount = 0;
 interface MainCameraProps {
   screenProps?: ScreenProps;
   closeModal?: () => void;
-  onSuccess?: () => void;
+  onSuccess?: (response?: any) => void;
   onError?: () => void;
 }
 
-export const MainCamera: React.FC<MainCameraProps> = ({ screenProps }) => {
+export const MainCamera: React.FC<MainCameraProps> = ({
+  screenProps,
+  onSuccess,
+}) => {
   const id = screenProps?.id;
 
   console.log('id', id);
@@ -96,48 +99,58 @@ export const MainCamera: React.FC<MainCameraProps> = ({ screenProps }) => {
   }
 
   const sendFile = useCallback(async () => {
-    let UID = id;
-    let finger = 'DI';
-    let images = arrayImages;
+    try {
+      let UID = id;
+      let finger = 'DI';
+      let images = arrayImages;
 
-    if (validarBase64(images) === false) {
-      return false;
-    }
-    let req = await sendImages(UID, finger, images);
-
-    console.log('req', JSON.stringify(req, null, 2));
-    //console.log(req)
-    if (req.code === 0) {
-      Alert.alert('Sucesso !');
-      setLoad(false);
-      setArrayImages([]);
-      openModal({
-        type: 'login',
+      console.log('infos', {
+        UID,
+        finger,
       });
-    } else if (req.code === 1) {
-      Alert.alert('Já cadastrada !');
-    } else {
-      //alert("Erro, por favor, verifique e tente novamente !")
+
+      if (validarBase64(images) === false) {
+        return false;
+      }
+      let req = await sendImages(UID, finger, images);
+
+      console.log('req', JSON.stringify(req, null, 2));
+      //console.log(req)
+      if (req.code === 0) {
+        Alert.alert('Sucesso !');
+        onSuccess && onSuccess(req);
+        setLoad(false);
+        setArrayImages([]);
+        return;
+      } else if (req.code === 1) {
+        Alert.alert('Já cadastrada !');
+      } else {
+        //alert("Erro, por favor, verifique e tente novamente !")
+        setLoad(false);
+        setArrayImages([]);
+        vezesQualidadeDigitalCount += 1; // Incrementa a contagem
+        //console.log('Quantidade de prevCount: ', vezesQualidadeDigitalCount)
+        if (arrayImages.length > 0) {
+          const firstBase64 = arrayImages[0]; // Pega o primeiro elemento do array
+
+          openModal({
+            type: 'imageDisplayScreen',
+            screenProps: {
+              id: id,
+              base64Image: firstBase64,
+            },
+          });
+        }
+      }
       setLoad(false);
       setArrayImages([]);
-      vezesQualidadeDigitalCount += 1; // Incrementa a contagem
-      //console.log('Quantidade de prevCount: ', vezesQualidadeDigitalCount)
-      if (arrayImages.length > 0) {
-        const firstBase64 = arrayImages[0]; // Pega o primeiro elemento do array
-
-        openModal({
-          type: 'imageDisplayScreen',
-          screenProps: {
-            id: id,
-            base64Image: firstBase64,
-          },
-        });
-      }
+      return;
+    } catch (error) {
+      console.log('Erro ao enviar imagens: ' + error);
+      setLoad(false);
+      return;
     }
-    setLoad(false);
-    setArrayImages([]);
-    return;
-  }, [arrayImages, id, openModal]);
+  }, [arrayImages, id, onSuccess, openModal]);
 
   useEffect(() => {
     if (arrayImages.length === 3) {

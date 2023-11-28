@@ -18,6 +18,7 @@ export interface ScreenProps {
   fingerError?: false;
   base64Image?: string;
   ativarCampoSenha?: boolean;
+  onSuccessCadastro?: (req: any) => void;
   [key: string]: any;
 }
 

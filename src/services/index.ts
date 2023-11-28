@@ -51,7 +51,7 @@ export const verificaCPF = async (cpf: any) => {
   const response = await fetch(`${API_URL}/validcpf`, {
     method: 'POST',
     headers: BASE_HEADER,
-    body: { cpf },
+    body: JSON.stringify({ cpf }),
   });
   const data = await response.json();
   return data;

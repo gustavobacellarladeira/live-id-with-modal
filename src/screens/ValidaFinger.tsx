@@ -18,12 +18,16 @@ import { useModal } from '../context/modal';
 
 interface ValidaFingerProps {
   closeModal: () => void;
+  onError?: (response?: any) => void;
+  onSuccess?: (response?: any) => void;
   screenProps?: ScreenProps;
 }
 
 export const ValidaFinger: React.FC<ValidaFingerProps> = ({
   screenProps,
   closeModal,
+  onError,
+  onSuccess,
 }) => {
   const id = screenProps?.id;
   const { openModal } = useModal();
@@ -52,41 +56,49 @@ export const ValidaFinger: React.FC<ValidaFingerProps> = ({
   };
 
   const sendFile = useCallback(async () => {
-    let UID = id;
-    let finger = 'DI';
-    let image = capturedImage;
-    let req = await verifyDigital(UID, finger, image);
+    try {
+      let UID = id;
+      let finger = 'DI';
+      let image = capturedImage;
+      let req = await verifyDigital(UID, finger, image);
 
-    if (req.code === 0) {
-      Alert.alert('Sucesso identificado !');
-      setShowCamera(false);
-    } else if (req.code === 1) {
-      Alert.alert('Não Identificado !');
+      onSuccess && onSuccess(req);
+
+      if (req.code === 0) {
+        Alert.alert('Sucesso identificado !');
+        setShowCamera(false);
+      } else if (req.code === 1) {
+        Alert.alert('Não Identificado !');
+        setLoad(false);
+        setCapturedImage(null);
+        openModal({
+          type: 'login',
+          screenProps: {
+            ativarCampoSenha: true,
+            fingerErro: true,
+          },
+        });
+      } else {
+        Alert.alert('Erro ao tentar validar');
+        setLoad(false);
+        setCapturedImage(null);
+        openModal({
+          type: 'login',
+          screenProps: {
+            ativarCampoSenha: true,
+            fingerErro: true,
+          },
+        });
+      }
+
       setLoad(false);
       setCapturedImage(null);
-      openModal({
-        type: 'login',
-        screenProps: {
-          ativarCampoSenha: true,
-          fingerErro: true,
-        },
-      });
-    } else {
-      Alert.alert('Erro ao tentar validar');
-      setLoad(false);
-      setCapturedImage(null);
-      openModal({
-        type: 'login',
-        screenProps: {
-          ativarCampoSenha: true,
-          fingerErro: true,
-        },
-      });
+      closeModal();
+      return;
+    } catch (error) {
+      onError && onError(error);
     }
-    setLoad(false);
-    setCapturedImage(null);
-    return;
-  }, [capturedImage, id, openModal]);
+  }, [capturedImage, id, onError, onSuccess, openModal, closeModal]);
 
   useEffect(() => {
     if (capturedImage !== null) {
@@ -116,43 +128,34 @@ export const ValidaFinger: React.FC<ValidaFingerProps> = ({
   return (
     <View style={styles.container}>
       <Loading visible={load} />
-      {!showCamera ? (
-        <View style={styles.containerShowCamera}>
-          <Button title="Mostrar Camera" onPress={() => setShowCamera(true)} />
-          <Button title="Fechar Tela" onPress={closeModal} />
+
+      <View style={{ flex: 1 }}>
+        <Camera
+          ref={camera}
+          style={styles.subContainer}
+          isActive={showCamera}
+          device={device}
+          torch={'on'}
+          // @ts-ignore
+          exposure={0.4}
+          zoom={3}
+          photo={true}
+          enableHighQualityPhotos={true}
+        />
+        <View style={styles.containerCameraView}>
+          <View style={styles.cameraView} />
         </View>
-      ) : (
-        <View style={{ flex: 1 }}>
-          <Camera
-            ref={camera}
-            style={styles.subContainer}
-            isActive={showCamera}
-            device={device}
-            torch={'on'}
-            // @ts-ignore
-            exposure={0.4}
-            zoom={3}
-            photo={true}
-            enableHighQualityPhotos={true}
-          />
-          <View style={styles.containerCameraView}>
-            <View style={styles.cameraView} />
-          </View>
-          <View style={styles.containerCapture}>
-            <TouchableOpacity onPress={() => capturedPhoto()}>
-              <View style={styles.containerTitle}>
-                <Text style={styles.title}>Tirar Foto</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-          <View>
-            <Button
-              title="Fechar Camera"
-              onPress={() => setShowCamera(false)}
-            />
-          </View>
+        <View style={styles.containerCapture}>
+          <TouchableOpacity onPress={() => capturedPhoto()}>
+            <View style={styles.containerTitle}>
+              <Text style={styles.title}>Tirar Foto</Text>
+            </View>
+          </TouchableOpacity>
         </View>
-      )}
+        <View>
+          <Button title="Fechar Camera" onPress={closeModal} />
+        </View>
+      </View>
     </View>
   );
 };
