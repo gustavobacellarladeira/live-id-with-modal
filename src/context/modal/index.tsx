@@ -27,6 +27,12 @@ export const ModalProvider: React.FC<ModalProviderProps> = (props) => {
     return modalRef.current?.open();
   };
 
+  const closeModal = () => {
+    setModalConfigs(undefined);
+
+    return modalRef.current?.close();
+  };
+
   const renderModal = useMemo(() => {
     if (!modalConfigs) return;
 
@@ -42,7 +48,7 @@ export const ModalProvider: React.FC<ModalProviderProps> = (props) => {
   }, [modalConfigs]);
 
   return (
-    <ModalContext.Provider value={{ openModal }}>
+    <ModalContext.Provider value={{ openModal, closeModal }}>
       {children}
       {renderModal}
     </ModalContext.Provider>

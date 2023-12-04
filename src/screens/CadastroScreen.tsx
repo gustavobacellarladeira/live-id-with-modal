@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -15,9 +15,14 @@ import { useModal } from '../context/modal';
 export interface CadastroScreenProps {
   closeModal: () => void;
   screenProps?: ScreenProps;
+  onError?: (response?: any) => void;
+  onSuccess?: (response?: any) => void;
 }
 
-export const CadastroScreen: React.FC<CadastroScreenProps> = ({}) => {
+export const CadastroScreen: React.FC<CadastroScreenProps> = ({
+  onError,
+  onSuccess,
+}) => {
   const [cpf, setCpf] = useState('');
   const [nome, setNome] = useState('');
   const [senha, setSenha] = useState('');
@@ -30,27 +35,25 @@ export const CadastroScreen: React.FC<CadastroScreenProps> = ({}) => {
       if (senha === confirmarSenha) {
         const response = await cadastro(cpf, nome, senha);
         var jsonString = JSON.stringify(response);
-
-        console.log('cadstro response -->', jsonString);
-        // todo: perguntar o porque do response padrao ser -->  {"code":1,"finger":false,"message":"User exists"} quando clica no cadastrar
+        onSuccess && onSuccess(response);
         if (jsonString.includes('person_id')) {
           if (response.finger === false) {
-            openModal({
-              type: 'ajuda',
-              screenProps: {
-                id: response.person_id,
-              },
-            });
+            // openModal({
+            //   type: 'ajuda',
+            //   screenProps: {
+            //     id: response.person_id,
+            //   },
+            // });
           } else {
-            openModal({
-              type: 'login',
-            });
+            // openModal({
+            //   type: 'login',
+            // });
           }
         } else if (jsonString.includes('User exists')) {
           Alert.alert('Usuário já cadastrado!');
-          openModal({
-            type: 'login',
-          });
+          // openModal({
+          //   type: 'login',
+          // });
         } else if (jsonString.includes('erro')) {
           Alert.alert('Usuário não cadastrado', 'Por favor, cadastre-se!');
         } else {
@@ -67,6 +70,7 @@ export const CadastroScreen: React.FC<CadastroScreenProps> = ({}) => {
         return;
       }
     } catch (error) {
+      onError && onError(error);
       console.error(error);
     }
   };

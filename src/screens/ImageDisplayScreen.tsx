@@ -24,16 +24,9 @@ export const ImageDisplayScreen: React.FC<ImageDisplayScreenProps> = ({
 
   const { openModal } = useModal();
 
-  const goBack = () => {
-    // todo: verificar isso
-    // navigation.goBack();
-  };
-
   const handleProximaTela = () => {
-    // navigation.navigate('Ajuda', { id: id });
-
     openModal({
-      type: 'ajuda',
+      type: 'cadastroFinger',
       screenProps: {
         id: id,
       },

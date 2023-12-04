@@ -18,6 +18,7 @@ import { ImageDisplayScreen } from '../../../../screens/ImageDisplayScreen';
 import { CameraProvaVidas } from '../../../../screens/ProvaVidas';
 import { ProvaVidas } from '../../../../screens/ProvaVidaScreen';
 import { ValidaFinger } from '../../../../screens/ValidaFinger';
+import { CadastroFinger } from '../../../../screens/CadastroFinger/CadastroFinger';
 
 const modais = {
   cadastroScreen: (
@@ -28,7 +29,7 @@ const modais = {
     }: {
       modalClose: any;
       onSuccess?: (response: any) => void;
-      onError?: () => void;
+      onError?: (response: any) => void;
     },
     screenProps?: ScreenProps
   ) => (
@@ -127,6 +128,26 @@ const modais = {
     screenProps?: ScreenProps
   ) => (
     <ValidaFinger
+      onError={onError}
+      onSuccess={(response) => onSuccess && onSuccess(response)}
+      closeModal={modalClose}
+      screenProps={screenProps}
+    />
+  ),
+
+  cadastroFinger: (
+    {
+      modalClose,
+      onSuccess,
+      onError,
+    }: {
+      modalClose: any;
+      onSuccess?: (response: any) => void;
+      onError?: () => void;
+    },
+    screenProps?: ScreenProps
+  ) => (
+    <CadastroFinger
       onError={onError}
       onSuccess={(response) => onSuccess && onSuccess(response)}
       closeModal={modalClose}

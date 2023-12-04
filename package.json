@@ -1,6 +1,6 @@
 {
   "name": "react-native-live-id-sdk",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "liveID",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",

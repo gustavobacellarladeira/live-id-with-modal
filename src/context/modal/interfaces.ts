@@ -10,7 +10,8 @@ export type ModalTypes =
   | 'imageDisplayScreen'
   | 'cameraProvaVidas'
   | 'provaVidas'
-  | 'validaFinger';
+  | 'validaFinger'
+  | 'cadastroFinger';
 
 export interface ScreenProps {
   id?: string;
@@ -29,6 +30,7 @@ export interface OpenModalProps extends ModalProps {
 
 export interface ModalContextProps {
   openModal: (modalProps: OpenModalProps) => void;
+  closeModal: () => void;
 }
 
 export interface ModalProviderProps {

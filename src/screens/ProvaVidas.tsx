@@ -24,6 +24,7 @@ interface CameraProvaVidasProps {
 
 export const CameraProvaVidas: React.FC<CameraProvaVidasProps> = ({
   screenProps,
+  closeModal: closeScreen,
 }) => {
   const id = screenProps?.id;
   const [showCamera, setShowCamera] = useState(true);
@@ -122,7 +123,7 @@ export const CameraProvaVidas: React.FC<CameraProvaVidasProps> = ({
       Alert.alert(req.message);
     }
     setLoad(false);
-
+    closeScreen();
     return;
   };
 
@@ -140,46 +141,34 @@ export const CameraProvaVidas: React.FC<CameraProvaVidasProps> = ({
         onFinish={() => console.log}
       />
       <Loading visible={load} />
-      {!showCamera ? (
-        <View
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: `center`,
-            backgroundColor: 'transparent',
-          }}
-        >
-          <Button title="Mostrar Camera" onPress={() => setShowCamera(true)} />
+
+      <View style={styles.containerCamera}>
+        <Camera
+          ref={camera}
+          style={styles.subContainer}
+          isActive={showCamera}
+          device={device}
+          video={true}
+          torch={'on'}
+        />
+        <View style={styles.cameraView} />
+        <View style={styles.containerTouch}>
+          <TouchableOpacity
+            onPress={() => recordingVideo()}
+            disabled={isRecording}
+          >
+            <View style={styles.containerText}>
+              <Text style={styles.textRecording}>
+                {isRecording
+                  ? `Aguarde ${timer} segundos`
+                  : load
+                  ? 'Processando...'
+                  : 'Verificar'}
+              </Text>
+            </View>
+          </TouchableOpacity>
         </View>
-      ) : (
-        <View style={styles.containerCamera}>
-          <Camera
-            ref={camera}
-            style={styles.subContainer}
-            isActive={showCamera}
-            device={device}
-            video={true}
-            torch={'on'}
-          />
-          <View style={styles.cameraView} />
-          <View style={styles.containerTouch}>
-            <TouchableOpacity
-              onPress={() => recordingVideo()}
-              disabled={isRecording}
-            >
-              <View style={styles.containerText}>
-                <Text style={styles.textRecording}>
-                  {isRecording
-                    ? `Aguarde ${timer} segundos`
-                    : load
-                    ? 'Processando...'
-                    : 'Verificar'}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
+      </View>
     </View>
   );
 };
